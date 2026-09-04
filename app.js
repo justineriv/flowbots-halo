@@ -8,6 +8,14 @@
 (function () {
   var motion = document.documentElement.classList.contains('motion-on');
 
+  /* Every failsafe funnels through here. `js-rv` is the scroll-reveal
+     switch; if motion is being abandoned the reveal must be abandoned
+     with it, or content below the fold stays at opacity 0 forever. */
+  var standDown = function () {
+    document.documentElement.classList.remove('motion-on');
+    document.documentElement.classList.remove('js-rv');
+  };
+
   /* Failsafe 1 — the hero.
      If the hero has not reached full opacity shortly after load, drop
      motion-on so the page falls back to its finished state rather than
@@ -17,7 +25,7 @@
     if (probe) {
       setTimeout(function () {
         if (parseFloat(getComputedStyle(probe).opacity) < 0.9) {
-          document.documentElement.classList.remove('motion-on');
+          standDown();
         }
       }, 1200);
     }
@@ -40,12 +48,131 @@
         var onScreen = isFeed ? r.height > 2
                               : (r.top < window.innerHeight * 0.8 && r.bottom > 0 && r.height > 2);
         if (onScreen && parseFloat(getComputedStyle(els[i]).opacity) < 0.9) {
-          document.documentElement.classList.remove('motion-on');
+          standDown();
           return;
         }
       }
     }, 1500);
   }
+
+  /* ============================================================
+     SCROLL REVEAL — the Halo direction's motion.
+
+     Each element rises 24px and fades in as it reaches the viewport.
+     Siblings in a row are staggered 80ms apart so a card grid
+     cascades rather than landing as one block.
+
+     WHY THE HIDDEN STATE IS SET FROM HERE AND NOT FROM CSS:
+     nothing in the HTML or the stylesheet carries `js-rv`. This block
+     adds it only after it has built a working IntersectionObserver and
+     found something to observe. No JavaScript, an older browser, a
+     thrown error, reduced motion, or ?motion=off all leave the class
+     off, and every element renders at full opacity in its final
+     position. A watchdog strips it again if anything on screen is
+     still hidden 1.5s later. This project has shipped invisible
+     content twice; CSS is never allowed to hide anything on its own.
+     ============================================================ */
+  (function () {
+    /* The head script arms `js-rv` before first paint. Every path out of
+       this block that does NOT set up the reveal has to disarm it again,
+       or the class would sit there with nothing to reveal. */
+    var off = function () { document.documentElement.classList.remove('js-rv'); };
+    if (!motion) return off();
+    if (!document.body.classList.contains('skin-light')) return off();
+    if (!('IntersectionObserver' in window)) return off();
+
+    var sections = document.querySelectorAll('main .sec, main .logos, main .close');
+    if (!sections.length) return off();
+
+    var STAGGER = 80, MAX_STEPS = 8;
+    var targets = [];
+
+    var kidsOf = function (el) {
+      return Array.prototype.filter.call(el.children, function (c) {
+        return c.nodeType === 1 && !/^(SCRIPT|STYLE|BR)$/.test(c.tagName);
+      });
+    };
+    /* A "simple" child holds at most a couple of elements — a heading with
+       one span, a paragraph, a button. A run of those reads as lines of a
+       block and cascades well. */
+    var simple = function (el) { return kidsOf(el).length <= 2; };
+    var laidOut = function (el) {
+      var d = getComputedStyle(el).display;
+      return d.indexOf('grid') > -1 || d.indexOf('flex') > -1;
+    };
+    /* The marquee track and the console feed run their own transforms.
+       Never hand them a second one. `.lead-ok` starts hidden and is shown
+       by the form handler, so it must not depend on a scroll event that
+       already happened. */
+    var SKIP = /(^|\s)(lg-track|feed|lead-ok)(\s|$)/;
+
+    var add = function (el, i) {
+      if (SKIP.test(el.getAttribute('class') || '')) return;
+      el.classList.add('rv');
+      if (i) el.style.setProperty('--rvd', Math.min(i, MAX_STEPS) * STAGGER + 'ms');
+      targets.push(el);
+    };
+
+    Array.prototype.forEach.call(sections, function (sec) {
+      var wrap = sec;
+      kidsOf(sec).forEach(function (c) {
+        if ((c.getAttribute('class') || '').split(/\s+/).indexOf('wrap') > -1) wrap = c;
+      });
+      kidsOf(wrap).forEach(function (child) {
+        var kids = kidsOf(child);
+        var cascade = kids.length >= 2 && kids.length <= 16 &&
+                      (laidOut(child) || kids.every(simple));
+        if (cascade) kids.forEach(add); else add(child, 0);
+      });
+    });
+    if (!targets.length) return off();
+
+    var seen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('rv-in');
+        seen.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0 });
+
+    document.documentElement.classList.add('js-rv');   /* idempotent */
+    targets.forEach(function (el) { seen.observe(el); });
+
+    /* Watchdog. Two separate failures are caught: an element on screen the
+       observer never marked, and an element it did mark that never became
+       visible because the transition stalled. Either one abandons the whole
+       system and leaves the page plainly visible.
+
+       It runs 2.6s after load AND 2.6s after scrolling stops, until one
+       run has actually inspected something and found it healthy. A single
+       load-time check is not enough: on a phone the hero fills the screen,
+       so at load there is nothing below it to inspect, and a broken
+       observer would go unnoticed until the reader had already scrolled
+       into a page of invisible text. */
+    var settled = false, timer = null;
+
+    var verify = function () {
+      var inspected = false;
+      for (var i = 0; i < targets.length; i++) {
+        var el = targets[i], r = el.getBoundingClientRect();
+        if (r.top >= window.innerHeight || r.bottom <= 0 || r.height <= 2) continue;
+        inspected = true;
+        if (!el.classList.contains('rv-in') ||
+            parseFloat(getComputedStyle(el).opacity) < 0.9) { off(); return true; }
+      }
+      return inspected;   /* true also means: stop checking */
+    };
+
+    var schedule = function () {
+      if (settled) return;
+      clearTimeout(timer);
+      /* The longest legitimate reveal is a 640ms stagger plus a 620ms
+         transition, so 2.6s leaves room on a slow device. */
+      timer = setTimeout(function () { if (!settled && verify()) settled = true; }, 2600);
+    };
+    schedule();
+    window.addEventListener('scroll', schedule, { passive: true });
+  })();
 
   /* Real scrollbar width, so a full-bleed element can span the viewport
      without 100vw pushing the page wider and creating horizontal scroll. */
