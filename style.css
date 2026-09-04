@@ -274,11 +274,13 @@ ul{margin:0;padding:0;list-style:none}
 /* ---------- integrations ---------- */
 .integrations{padding:var(--s8) 0;border-bottom:1px solid var(--line)}
 .int-title{text-align:center;font-size:.8rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:var(--s6)}
-.int-marquee{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
-.int-track{display:flex;width:max-content}
-.motion-on .int-track{animation:marq 42s linear infinite}
-@keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.int-marks{display:flex;align-items:center;gap:var(--s9);padding-right:var(--s9)}
+/* Static by design. Halo animates the hero panel background and nothing else,
+   so the logo strip is a wrapped row rather than a marquee. The second track
+   exists only to make a marquee loop seamlessly, so it is removed here. */
+.int-marquee{overflow:hidden}
+.int-track{display:block;width:auto}
+.int-track .int-marks[aria-hidden="true"]{display:none}
+.int-marks{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:var(--s6) var(--s8);padding:0}
 .int-logo{color:#33536D;opacity:.85;flex:0 0 auto}
 .int-note{text-align:center;color:var(--faint);font-size:.86rem;margin-top:var(--s6)}
 
@@ -439,6 +441,11 @@ td.hl{color:var(--cy-deeper);font-weight:600}
 .lead-success{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--radius-lg);padding:var(--s7);box-shadow:var(--shadow)}
 .lead-tick{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:rgba(15,159,114,.14);border:1px solid rgba(15,159,114,.34);color:#0B7A57;margin-bottom:var(--s4)}
 .lead-success p{color:var(--muted)}
+.lead-demo{
+  background:#FFF6E6;border:1px solid #C08A2E;color:#6B4708;
+  display:block;margin-top:var(--s5);padding:var(--s4);border-radius:var(--radius-sm);
+  font-size:.84rem;line-height:1.5;
+}
 
 /* ---------- FAQ ---------- */
 .faq-thread{display:grid;gap:var(--s3)}

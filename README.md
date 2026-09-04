@@ -15,8 +15,10 @@ static, separated by whitespace and hairlines rather than alternating bands.
 - **Accent** — FlowBots cyan `#38BADF` as a mark and a button ground. On light
   grounds it is never a text colour: it measures 2.27:1 on white. Text uses
   `#06596E`, which clears AA everywhere on this page.
-- **Motion** — the drifting background inside the hero panel, the console feed,
-  and the integration marquee. Nothing else on the page animates.
+- **Motion** — the drifting background inside the hero panel and the console.
+  **Nothing outside the hero panel animates**, measured: 8 animations on the
+  page, all of them inside `.hero`. The integration strip is a static wrapped
+  row, not a marquee, because a marquee is neither the background nor static.
 
 ## Relationship to the other directions
 
@@ -40,8 +42,10 @@ the end of `app.js` turns them all back on.
 
 ## Known limits, stated rather than hidden
 
-1. **The assessment form has no backend.** It validates and confirms; no lead is
-   delivered anywhere.
+1. **The assessment form has no backend.** It validates and shows the designed
+   confirmation state, and that state says plainly that nothing was sent and no
+   one has been contacted. It must not be wired to look like a working form
+   until a real endpoint exists behind it.
 2. **No analytics ID.** CTA and lead events fire through `dataLayer`/`gtag` the
    moment GA4 or GTM is added.
 3. **The O'Leary photograph shows shirts reading "RoboTeams.ai".** Carried from
