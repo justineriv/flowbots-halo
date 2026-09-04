@@ -13,7 +13,7 @@
      motion-on so the page falls back to its finished state rather than
      sitting mid-animation. */
   if (motion) {
-    var probe = document.querySelector('.hero h1, .hero-slab h1, .hero-copy > *');
+    var probe = document.querySelector('.hero h1');
     if (probe) {
       setTimeout(function () {
         if (parseFloat(getComputedStyle(probe).opacity) < 0.9) {
@@ -33,7 +33,7 @@
      other place content could be left at opacity 0. */
   if (motion) {
     setTimeout(function () {
-      var els = document.querySelectorAll('.reveal, .hero .feed-item, .hero-slab .feed-item');
+      var els = document.querySelectorAll('.reveal, .hero .feed-item');
       for (var i = 0; i < els.length; i++) {
         var r = els[i].getBoundingClientRect();
         var isFeed = els[i].classList.contains('feed-item');
@@ -135,7 +135,7 @@
      resolve, not something this prototype should pretend to do. */
   var form = document.querySelector('[data-leadform]');
   if (form) {
-    var success = document.querySelector('.lead-success, .lead-ok');
+    var success = document.querySelector('.lead-ok');
     var setErr = function (input, msg) {
       var err = document.getElementById(input.id + '-err');
       if (err) err.textContent = msg || '';

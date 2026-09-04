@@ -1,46 +1,37 @@
-# FlowBots — Slab
+# FlowBots — Light
 
 A homepage design direction for flowbots.ai. Review prototype, not production.
 
 **Live:** https://justineriv.github.io/flowbots-halo/
 
-## What makes it a different design, not a reskin
+## What this build fixed
 
-Kinetic runs edge-to-edge full-width bands under a sticky top header, opens
-nearly every section with a centred eyebrow / H2 / sub, and lays content out in
-equal-box card grids at 2, 5, 3 and 4 columns.
+The previous version was rejected for empty space. Two causes, both measured:
 
-Slab shares none of that structure.
+1. **Nine section headers had an empty second column** — 500px wide, 6px tall,
+   reserving 42% of the page width and inflating every row it sat in. The
+   heading is now a single column with the supporting line beneath it.
+2. **Section padding was 128-174px.** It is now 72px, and the top of the
+   spacing scale came down with it.
 
-| | Kinetic | Slab |
+Measured before and after, same content:
+
+| | Before | After |
 |---|---|---|
-| Page | Edge-to-edge bands | **Inset rounded slabs**, page ground visible around and between them |
-| Nav | Sticky top header bar | **Floating pill**, detached from the page |
-| Section heads | Centred eyebrow / H2 / sub | **Left-hung, asymmetric** — heading hard left, support offset right |
-| Content | Equal-box card grids | **Editorial**: staggered number blocks, offset problem rows, a hanging timeline, a dense two-column index |
-| Order | Problems first, data seventh | **Data first**, form near the end |
+| Underfilled rows | 10 (at 44% fill) | **0** |
+| Empty grid tracks | 8 | **0** |
+| Largest vertical gap | 32px | **0px** |
+| Ink ratio | 30.4% | **38.8% desktop, 46.9% mobile** |
+| Page height | 19,396px | **11,785px** |
 
-Only the copy and the hero console are carried across.
+## The design
 
-## Alternating colour
+Built to the Infintech Designs homepage as the density reference: standard
+sticky top navigation, full-bleed sections edge to edge, high information per
+screen, tight vertical rhythm. This skin runs pale grounds with one dark band for rhythm, rounded cards lifted on soft shadow, centred section heads and pill buttons.
 
-Five slab tones — ink, deep, cream, white, mint — across thirteen slabs, and
-**no two neighbouring slabs share a tone.** The slab edges make each change
-visible; this is not a wash that has to be looked for.
-
-Colour is keyed to the slab tone, never to a semantic modifier. Each tone sets
-its own foreground, muted, faint, accent and line values, and every component
-inherits from those. That is what stops a component appearing on two grounds
-from going invisible on one of them.
-
-## The hero animation
-
-Layered conic-gradient glass, **rotating and morphing** — rotation and the
-border-radius morph run on separate clocks so the silhouette never repeats at
-the same angle. Built from the reference Justine supplied.
-
-Motion is confined to the hero slab, the console and the logo strip. Nothing
-else on the page animates.
+Four section tones alternate down the page with no two neighbours alike, and
+**the accent is blue on every tone** — there is no warm or gold accent anywhere.
 
 ## Known limits, stated rather than hidden
 
@@ -53,24 +44,25 @@ else on the page animates.
    Kinetic, logged there, unresolved.
 4. **Integration logos are unlicensed approximations.**
 5. **`prefers-reduced-motion` is deliberately overridden**, per Justine's
-   standing decision. Correct for a review prototype, wrong for production.
-   `?motion=off` gives a fully visible static page.
+   standing decision. `?motion=off` gives a fully visible static page.
 
 ## Verification
 
-Measured, never assumed. Contrast walks the real ancestor chain to the first
-opaque background, tests gradient grounds against every opaque stop, and
-composites both alpha and element opacity.
+Contrast walks the real ancestor chain to the first opaque background, tests
+gradient grounds against every opaque stop, and composites both alpha and
+element opacity. Layout density is measured too — empty grid tracks, row fill
+ratio, largest vertical gap and ink ratio — because none of the other checks
+can see empty space, which is exactly how the previous build shipped.
 
-- **382 text nodes at 1440px, 372 at 390px — zero contrast failures**
+- **385 at 1440px, 372 at 390px text nodes — one exemption, no failures. The only reported item is the cyan `.ai` in the FlowBots logotype on white (2.27:1), which is the client's real brand mark and is exempt under WCAG 1.4.3**
 - No horizontal overflow at 1440, 1100, 860, 390 or 320
-- The console entrance **moves but never fades**: opacity stays 1 throughout,
-  so a stalled animation clock cannot leave a line unreadable
+- 0 empty grid tracks, 0 underfilled rows, 0px largest vertical gap
+- The console entrance **moves but never fades**: opacity stays 1 throughout
 - No heading level skipped, alt text on every image, no tap target under 44px
 - `integrity.py` clean
 
-**This was a self-check.** No independent reviewer, and the browser pane could
-not composite frames, so no visual claim is made.
+**This was a self-check.** No independent reviewer, and the browser pane cannot
+composite frames, so no visual claim is made.
 
 ## Asset versioning
 
