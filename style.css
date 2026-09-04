@@ -50,15 +50,29 @@
 .skin-light .t3{--tone:#0B1B2B;--fg:#FFFFFF;--fg2:#B3CDDD;--fg3:#8FAFC4;--acc:var(--cy-lite);--ln:rgba(255,255,255,.14);--card:rgba(255,255,255,.06);--cln:rgba(255,255,255,.16)}
 .skin-light .t4{--tone:#E3EFF6;--fg:#0A1628;--fg2:#35566C;--fg3:#496A81;--acc:var(--cy-text);--ln:rgba(10,22,40,.14);--card:#FFFFFF;--cln:rgba(10,22,40,.10)}
 
-/* ---------- SKIN: DARK — deep grounds, square cards, left heads ---------- */
+/* ---------- SKIN: DARK — the Obsidian direction, rebuilt as chrome ----------
+   Reference: the Hexacore shot. A near-black ground under a cyan
+   atmosphere, brushed-steel surfaces, silver-gradient headline accents,
+   and everything on a pill. It carries its own display face: a shared
+   headline font was doing more than anything else to make the three
+   directions read as one. */
 .skin-dark{
-  --page:#070D16; --nav-bg:rgba(7,13,22,.92); --nav-ln:rgba(255,255,255,.10);
-  --card-r:6px; --head-align:left; --head-mx:0;
+  --page:#05070C;
+  --nav-bg:rgba(5,7,12,.72); --nav-ln:rgba(255,255,255,.07);
+  --card-r:14px; --head-align:center; --head-mx:auto;
+  --font-d:"Space Grotesk",system-ui,sans-serif;
 }
-.skin-dark .t1{--tone:#070D16;--fg:#FFFFFF;--fg2:#AFC9DA;--fg3:#88A7BD;--acc:var(--cy-lite);--ln:rgba(255,255,255,.10);--card:rgba(255,255,255,.045);--cln:rgba(255,255,255,.14)}
-.skin-dark .t2{--tone:#0D1B2A;--fg:#FFFFFF;--fg2:#B4D2E3;--fg3:#8DAEC4;--acc:var(--cy-lite);--ln:rgba(255,255,255,.12);--card:rgba(255,255,255,.055);--cln:rgba(255,255,255,.16)}
-.skin-dark .t3{--tone:#0A1420;--fg:#FFFFFF;--fg2:#AFC9DA;--fg3:#88A7BD;--acc:var(--cy-lite);--ln:rgba(255,255,255,.10);--card:rgba(255,255,255,.05);--cln:rgba(255,255,255,.15)}
-.skin-dark .t4{--tone:#10243A;--fg:#FFFFFF;--fg2:#BBD8E8;--fg3:#94B5CA;--acc:var(--cy-lite);--ln:rgba(255,255,255,.13);--card:rgba(255,255,255,.06);--cln:rgba(255,255,255,.17)}
+
+/* Two dark tones, strictly alternating, driven by POSITION rather than by
+   the tone class. The tone classes are assigned per section in the builder
+   and were never in alternating order, which is why the bands never read as
+   alternating. Keyed off nth-of-type, the rhythm holds however the sections
+   are arranged. */
+.skin-dark .sec,.skin-dark .close{--fg:#FFFFFF;--fg2:#BAC8D3;--fg3:#94A6B4;
+  --acc:var(--cy-lite);--ln:rgba(255,255,255,.085);
+  --card:rgba(255,255,255,.035);--cln:rgba(255,255,255,.11)}
+.skin-dark main .sec:nth-of-type(even){--tone:#05070C}
+.skin-dark main .sec:nth-of-type(odd){--tone:#0B1724}
 
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -152,7 +166,31 @@ a{color:var(--acc,var(--cy-text))}
    ============================================================ */
 .hero{position:relative;overflow:hidden;isolation:isolate;padding:var(--s10) 0;
   background:var(--hero-bg,#0B1B2B);color:#fff}
-.skin-dark .hero{background:#070D16}
+.skin-dark .hero{background:#05070C}
+/* the hero melts into the band below it instead of stopping at an edge */
+.skin-dark .hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:200px;
+  background:linear-gradient(180deg,rgba(11,23,36,0),#0B1724);pointer-events:none;z-index:0}
+
+/* --- ATMOSPHERE: three soft washes, no hard shape. The reference is
+   weather, not objects, which is the clearest break from the rotating
+   glass this direction used to carry. Keyframes move only; opacity is
+   never animated, so a stalled clock cannot hide anything. --- */
+.aura{position:absolute;border-radius:50%;pointer-events:none;filter:blur(90px)}
+.a1{width:min(1100px,120%);height:600px;left:50%;top:-180px;transform:translateX(-50%);
+  background:radial-gradient(closest-side,rgba(56,186,223,.30),rgba(56,186,223,0) 70%)}
+.a2{width:min(780px,90%);height:520px;right:-160px;top:80px;
+  background:radial-gradient(closest-side,rgba(1,51,76,.90),rgba(1,51,76,0) 72%)}
+.a3{width:min(900px,110%);height:420px;left:-200px;bottom:-140px;
+  background:radial-gradient(closest-side,rgba(56,186,223,.15),rgba(56,186,223,0) 72%)}
+.motion-on .a1{animation:drift1 19s ease-in-out infinite alternate}
+.motion-on .a3{animation:drift2 26s ease-in-out infinite alternate}
+@keyframes drift1{from{transform:translateX(-50%) translateY(0)}
+  to{transform:translateX(-50%) translateY(40px)}}
+@keyframes drift2{from{transform:translate(0,0)}to{transform:translate(64px,-34px)}}
+/* a fine grain over the wash, so a wide screen does not band the gradient */
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background-image:radial-gradient(rgba(255,255,255,.05) 1px,rgba(255,255,255,0) 1px);
+  background-size:3px 3px}
 .hfx{position:absolute;inset:0;z-index:0}
 .gl{position:absolute;border-radius:58% 42% 51% 49% / 47% 55% 45% 53%;
   background:conic-gradient(from 0deg,#38BADF,#7FE3FF,#1E9FC6,#0A7A96,#4FD1E8,#38BADF);
@@ -226,7 +264,7 @@ a{color:var(--acc,var(--cy-text))}
 /* ---------- logo strip ---------- */
 .logos{padding:var(--s7) 0;background:var(--tone,#fff);border-bottom:1px solid rgba(10,22,40,.09)}
 .skin-light .logos{background:#F6FAFD}
-.skin-dark .logos{background:#0A1420;border-bottom-color:rgba(255,255,255,.09)}
+.skin-dark .logos{background:#0B1724;border-bottom-color:rgba(255,255,255,.07)}
 .lg-t{text-align:center;font-size:.72rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
   color:#4C6B85;margin:0 0 var(--s5)}
 .skin-dark .lg-t{color:#88A7BD}
@@ -430,7 +468,7 @@ summary::-webkit-details-marker{display:none}
 
 /* close */
 .close{padding:var(--s10) 0;text-align:center;background:var(--ink);color:#fff}
-.skin-dark .close{background:#0D1B2A}
+.skin-dark .close{background:#05070C}
 .close h2{color:#fff;margin-bottom:var(--s3)}
 .close .grad{color:var(--cy-lite)}
 .close p{color:#B3CDDD;max-width:600px;margin:0 auto var(--s5)}
@@ -530,18 +568,67 @@ summary::-webkit-details-marker{display:none}
 .skin-light .ol img{border-radius:0}
 .skin-light .eyebrow{letter-spacing:.15em}
 
-/* DARK: flat, square, ruled. A cyan rule marks the top of every card
-   instead of a shadow, and headings sit hard left. */
-.skin-dark .pb,.skin-dark .pc,.skin-dark .bc,.skin-dark .cc,.skin-dark .cmp,
-.skin-dark .stat,.skin-dark .tc{position:relative;overflow:hidden}
-.skin-dark .pb::before,.skin-dark .pc::before,.skin-dark .bc::before,
-.skin-dark .cc::before,.skin-dark .cmp::before,.skin-dark .stat::before,
-.skin-dark .tc::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;
-  background:linear-gradient(90deg,var(--cy),transparent 70%)}
-.skin-dark .ac img,.skin-dark .ic img{filter:saturate(.85) contrast(1.05)}
-.skin-dark .eyebrow{letter-spacing:.2em;font-size:.68rem}
-.skin-dark h2{letter-spacing:-.03em}
-.skin-dark .head{max-width:820px}
+/* ============================================================
+   DARK — THE CHROME LANGUAGE
+
+   Brushed metal on near-black: a light rim and a top highlight on
+   every surface, silver-gradient accents in the headlines, and a
+   floating pill capsule for the navigation. Replaces the flat,
+   square, cyan-ruled treatment this direction used to carry.
+   ============================================================ */
+
+/* --- navigation: a floating capsule, per the reference --- */
+.skin-dark .nav-links{margin:0 auto;gap:2px;padding:4px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
+  border-radius:var(--r-pill);box-shadow:inset 0 1px 0 rgba(255,255,255,.09)}
+.skin-dark .nav-links a{border-radius:var(--r-pill);padding:0 15px;font-size:.87rem;color:#C2D2DE}
+.skin-dark .nav-links a:hover{background:rgba(255,255,255,.10);color:#fff}
+.skin-dark .nav-cta{margin-left:0}
+
+/* --- buttons: pills, one chrome and one smoked --- */
+.skin-dark .btn{border-radius:var(--r-pill)}
+.skin-dark .btn-p{background:linear-gradient(180deg,#FFFFFF 0%,#DCE7EE 100%);color:#05121A;
+  border-color:rgba(255,255,255,.55);
+  box-shadow:0 8px 26px rgba(56,186,223,.20),inset 0 1px 0 rgba(255,255,255,.95)}
+.skin-dark .btn-p:hover{filter:brightness(1.04)}
+.skin-dark .btn-s,.skin-dark .btn-g{background:rgba(255,255,255,.045);color:#EAF2F7;
+  border-color:rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.skin-dark .btn-s:hover,.skin-dark .btn-g:hover{background:rgba(255,255,255,.10)}
+
+/* --- headline accents run to brushed silver ---
+   The gradient is clipped to the text ONLY where the browser supports it,
+   and the colour underneath is solid and fully readable. Nothing here can
+   leave a headline transparent. The darkest stop measures 7.9:1 on the
+   near-black ground, so every part of the sweep clears AA. */
+.skin-dark .grad{color:#B9C8D4}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .skin-dark .grad{background:linear-gradient(96deg,#FFFFFF 0%,#D5E2EA 40%,#93A6B4 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent}
+}
+
+/* --- surfaces: brushed metal, lit from the top edge --- */
+.skin-dark .pb,.skin-dark .pc,.skin-dark .bc,.skin-dark .tc,.skin-dark .ac,
+.skin-dark .ic,.skin-dark .fc,.skin-dark .cc,.skin-dark .cmp,.skin-dark .stat,
+.skin-dark .tw,.skin-dark details,.skin-dark .lead-f,.skin-dark .lead-ok,
+.skin-dark .console{
+  background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.018));
+  border-color:rgba(255,255,255,.10);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 18px 44px rgba(0,0,0,.38)}
+.skin-dark .ac img,.skin-dark .ic img{filter:saturate(.82) contrast(1.06)}
+
+/* --- section heads: centred, with a hairline of chrome beneath --- */
+.skin-dark .eyebrow{letter-spacing:.22em;font-size:.67rem}
+.skin-dark h2{letter-spacing:-.022em}
+.skin-dark .head{max-width:840px}
+.skin-dark .head .sub{margin-inline:auto}
+.skin-dark .head::after{content:"";display:block;width:64px;height:1px;margin:var(--s5) auto 0;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.5),rgba(255,255,255,0))}
+
+/* --- the trust band and the footer sit at the darkest end --- */
+.skin-dark .lg-t{color:#8FA3B2;letter-spacing:.2em}
+.skin-dark .int-logo{color:#93A9B8}
+.skin-dark .foot{background:#03060A;border-top:1px solid rgba(255,255,255,.06)}
 
 /* ============================================================
    HALO — SCROLL REVEAL

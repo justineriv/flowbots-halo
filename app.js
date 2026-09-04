@@ -56,7 +56,7 @@
   }
 
   /* ============================================================
-     SCROLL REVEAL — the Halo direction's motion.
+     SCROLL REVEAL — Halo and Obsidian both use it.
 
      Each element rises 24px and fades in as it reaches the viewport.
      Siblings in a row are staggered 80ms apart so a card grid
@@ -77,8 +77,11 @@
        this block that does NOT set up the reveal has to disarm it again,
        or the class would sit there with nothing to reveal. */
     var off = function () { document.documentElement.classList.remove('js-rv'); };
+    /* The head script decides who gets the reveal, and only emits its
+       arming script on pages that want it. Reading the class here instead
+       of testing the skin keeps that decision in one place. */
+    if (!document.documentElement.classList.contains('js-rv')) return;
     if (!motion) return off();
-    if (!document.body.classList.contains('skin-light')) return off();
     if (!('IntersectionObserver' in window)) return off();
 
     var sections = document.querySelectorAll('main .sec, main .logos, main .close');
