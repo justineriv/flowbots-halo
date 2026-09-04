@@ -115,6 +115,9 @@ a{color:var(--acc,var(--cy-text))}
 
 /* ---------- sections: full bleed, tight, alternating ---------- */
 .sec{padding:var(--s10) 0;background:var(--tone);color:var(--fg)}
+/* The in-page CTAs now land on real sections, so every anchor target has to
+   clear the sticky nav or the heading lands underneath it. */
+.sec,.logos,.close,#assessment{scroll-margin-top:84px}
 .sec p{color:var(--fg2)}
 .sec h2,.sec h3{color:var(--fg)}
 .grad{color:var(--acc)}
@@ -573,6 +576,27 @@ summary::-webkit-details-marker{display:none}
 }
 @media (max-width:600px){
   .wrap{width:calc(100% - 28px)}
+
+  /* THE CONSOLE ABOVE THE FOLD.
+     Measured at 390x844 it started at 950px — below the fold, and it is the
+     page's central demonstration. Two changes, no content removed:
+     the hero's padding comes in, and the three stat figures move BELOW the
+     console instead of sitting between it and the buttons.
+
+     `display:contents` lifts .hero-l's children into the hero grid so they
+     can be ordered against .hero-r. Where it is unsupported the rule is
+     ignored and the layout falls back to exactly what it does today, which
+     is the current behaviour rather than a broken one. */
+  .hero{padding:var(--s7) 0 var(--s8)}
+  .hero-l{display:contents}
+  /* .hero-l's children become grid items, so the hero's 36px gap would now
+     sit between EVERY line of copy and push the CTA down 84px. Zero the gap
+     and let the elements keep their own margins; spacing is put back only
+     where it is wanted, around the console and the stats. */
+  .hero-in{gap:0}
+  .hero-r{order:2;margin-top:var(--s6)}
+  .hero-pts{order:3;margin-top:var(--s6)}
+  .lede{margin-bottom:var(--s4)}
   .g2,.g3,.fr2,.hero-pts{grid-template-columns:1fr}
   .g4,.g5{grid-template-columns:repeat(2,minmax(0,1fr))}
   .foot-g{grid-template-columns:1fr}
