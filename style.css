@@ -483,9 +483,19 @@ summary::-webkit-details-marker{display:none}
   .skin-light .faqs .fq-a{font-size:.84rem;line-height:1.6;padding:0 var(--s4) var(--s4)}
   .skin-light .faqs .fq-t{font-size:.6rem;padding:2px 7px}
 }
-/* Equal card heights in both skins, at every multi-column width. Halo's
-   block above overrides the first three rows with its own template. */
+/* Equal card heights in both skins, at every multi-column width. Each
+   skin's own template above overrides its explicit rows. */
 @media (min-width:601px){.faqs{grid-auto-rows:1fr}}
+
+/* Obsidian leads with the same full-width "How do I get started?" card, but
+   over its OWN two columns rather than Halo's three: six equal boxes in
+   three rows beneath it, so four rows in total. Row 1 sizes to its content
+   — the wide card's answer runs short and forcing it to match would leave
+   the hole this was meant to close. */
+@media (min-width:601px){
+  .skin-dark .faqs{grid-template-rows:auto 1fr 1fr 1fr}
+  .skin-dark .faqs details:first-child{grid-column:1/-1}
+}
 
 /* close */
 .close{padding:var(--s10) 0;text-align:center;background:var(--ink);color:#fff}
