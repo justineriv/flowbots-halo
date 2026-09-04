@@ -13,7 +13,7 @@
      motion-on so the page falls back to its finished state rather than
      sitting mid-animation. */
   if (motion) {
-    var probe = document.querySelector('.hero h1, .hero-copy > *');
+    var probe = document.querySelector('.hero h1, .hero-slab h1, .hero-copy > *');
     if (probe) {
       setTimeout(function () {
         if (parseFloat(getComputedStyle(probe).opacity) < 0.9) {
@@ -33,10 +33,12 @@
      other place content could be left at opacity 0. */
   if (motion) {
     setTimeout(function () {
-      var els = document.querySelectorAll('.reveal, .hero .feed-item');
+      var els = document.querySelectorAll('.reveal, .hero .feed-item, .hero-slab .feed-item');
       for (var i = 0; i < els.length; i++) {
         var r = els[i].getBoundingClientRect();
-        var onScreen = r.top < window.innerHeight * 0.8 && r.bottom > 0 && r.height > 2;
+        var isFeed = els[i].classList.contains('feed-item');
+        var onScreen = isFeed ? r.height > 2
+                              : (r.top < window.innerHeight * 0.8 && r.bottom > 0 && r.height > 2);
         if (onScreen && parseFloat(getComputedStyle(els[i]).opacity) < 0.9) {
           document.documentElement.classList.remove('motion-on');
           return;
@@ -57,8 +59,8 @@
   })();
 
   /* mobile nav */
-  var toggle = document.querySelector('.nav-toggle');
-  var menu = document.querySelector('.mobile-menu');
+  var toggle = document.querySelector('.nav-toggle, .pill-toggle');
+  var menu = document.querySelector('.mobile-menu, .pill-menu');
   if (toggle && menu) {
     toggle.addEventListener('click', function () {
       var open = menu.classList.toggle('open');
@@ -80,7 +82,7 @@
            (el.getAttribute('data-suffix') || '');
   };
   document.querySelectorAll('.countup').forEach(function (el) {
-    var inHero = !!el.closest('.hero');
+    var inHero = !!el.closest('.hero, .hero-slab');
     if (!motion || !inHero) { el.textContent = finalValue(el); return; }
     var target = parseFloat(el.getAttribute('data-target'));
     var prefix = el.getAttribute('data-prefix') || '';
@@ -100,7 +102,7 @@
 
   /* The console feed — hero only, motion only. Four visible at a time,
      the oldest rotating off every 3.2s. */
-  var feed = document.querySelector('.hero [data-feed]');
+  var feed = document.querySelector('[data-feed]');
   if (feed && motion) {
     var items = Array.prototype.slice.call(feed.children);
     var VISIBLE = 4;
@@ -133,7 +135,7 @@
      resolve, not something this prototype should pretend to do. */
   var form = document.querySelector('[data-leadform]');
   if (form) {
-    var success = document.querySelector('.lead-success');
+    var success = document.querySelector('.lead-success, .lead-ok');
     var setErr = function (input, msg) {
       var err = document.getElementById(input.id + '-err');
       if (err) err.textContent = msg || '';
