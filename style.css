@@ -393,6 +393,16 @@ summary::-webkit-details-marker{display:none}
   color:var(--acc);border:1px solid currentColor;padding:3px 8px;border-radius:var(--r-pill)}
 .fq-a{padding:0 var(--s5) var(--s5);color:var(--fg2);font-size:.89rem}
 
+/* Every FAQ card is the same size. `details` sets align-self:start, so each
+   card was only as tall as its own answer: a row ended with a ragged edge
+   and a hole under the shorter one. Scoped tighter than the base rule
+   rather than editing it, so a details element used anywhere else keeps
+   its own behaviour. grid-auto-rows:1fr makes every ROW the tallest card's
+   height, so all seven match, not just the pairs. Off below 600px, where
+   the grid is one column and equal heights would only add dead space. */
+.faqs details{align-self:stretch}
+@media (min-width:601px){.faqs{grid-auto-rows:1fr}}
+
 /* close */
 .close{padding:var(--s10) 0;text-align:center;background:var(--ink);color:#fff}
 .skin-dark .close{background:#0D1B2A}
