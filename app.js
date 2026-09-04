@@ -84,7 +84,14 @@
     var sections = document.querySelectorAll('main .sec, main .logos, main .close');
     if (!sections.length) return off();
 
-    var STAGGER = 80, MAX_STEPS = 8;
+    var STAGGER = 140, MAX_STEPS = 8;
+    /* How far up from the bottom the reveal line sits, as a fraction of the
+       viewport. The observer and the watchdog BOTH read it, so they cannot
+       drift apart: a watchdog that judged "on screen" while the observer
+       waited for this line would disarm the whole system 3.6s after load,
+       every time, on any screen showing an element that had not reached the
+       line yet. */
+    var LINE = 0.80;
     var targets = [];
 
     var kidsOf = function (el) {
@@ -133,7 +140,12 @@
         e.target.classList.add('rv-in');
         seen.unobserve(e.target);
       });
-    }, { rootMargin: '0px 0px -6% 0px', threshold: 0 });
+      /* The trigger line sits 20% up from the bottom, not on the bottom
+         edge. At -6% an element began moving the instant it poked into
+         view and had finished before it reached anywhere near the reading
+         line, so on a normal scroll the motion was over before you looked
+         at it. Now it starts once the element is properly on screen. */
+    }, { rootMargin: '0px 0px -' + Math.round((1 - LINE) * 100) + '% 0px', threshold: 0 });
 
     document.documentElement.classList.add('js-rv');   /* idempotent */
     targets.forEach(function (el) { seen.observe(el); });
@@ -155,7 +167,9 @@
       var inspected = false;
       for (var i = 0; i < targets.length; i++) {
         var el = targets[i], r = el.getBoundingClientRect();
-        if (r.top >= window.innerHeight || r.bottom <= 0 || r.height <= 2) continue;
+        /* Same geometry the observer uses. Judging anything the observer
+           has not been asked to fire for yet would report a false failure. */
+        if (r.top >= window.innerHeight * LINE || r.bottom <= 0 || r.height <= 2) continue;
         inspected = true;
         if (!el.classList.contains('rv-in') ||
             parseFloat(getComputedStyle(el).opacity) < 0.9) { off(); return true; }
@@ -166,12 +180,22 @@
     var schedule = function () {
       if (settled) return;
       clearTimeout(timer);
-      /* The longest legitimate reveal is a 640ms stagger plus a 620ms
-         transition, so 2.6s leaves room on a slow device. */
-      timer = setTimeout(function () { if (!settled && verify()) settled = true; }, 2600);
+      /* The longest legitimate reveal is a 1120ms stagger plus a 950ms
+         transition, so 3.6s leaves room on a slow device. */
+      timer = setTimeout(function () { if (!settled && verify()) settled = true; }, 3600);
     };
+    /* A trigger line 20% up from the bottom means an element sitting in
+       the last fifth of the page can never cross it, because the page has
+       run out of scroll. At the bottom, reveal whatever is left. */
+    var atBottom = function () {
+      if (window.innerHeight + window.scrollY <
+          document.documentElement.scrollHeight - 4) return;
+      targets.forEach(function (el) { el.classList.add('rv-in'); });
+    };
+
     schedule();
-    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('scroll', function () { atBottom(); schedule(); },
+                            { passive: true });
   })();
 
   /* Real scrollbar width, so a full-bleed element can span the viewport
