@@ -399,7 +399,7 @@ summary::-webkit-details-marker{display:none}
 .close h2{color:#fff;margin-bottom:var(--s3)}
 .close .grad{color:var(--cy-lite)}
 .close p{color:#B3CDDD;max-width:600px;margin:0 auto var(--s5)}
-.close .micro{color:#8FAFC4}
+.close .micro{color:#8FAFC4;margin-top:var(--s4)}
 
 /* footer */
 .foot{background:#061421;color:#AFC9DA;padding:var(--s10) 0 var(--s6)}
