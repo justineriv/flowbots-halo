@@ -402,26 +402,31 @@ summary::-webkit-details-marker{display:none}
    the grid is one column and equal heights would only add dead space. */
 .faqs details{align-self:stretch}
 
-/* A full-width lead card, then three across in two rows of three equal
-   boxes beneath it. grid-auto-rows:1fr makes every row the
-   tallest card's height, so the six match exactly rather than only within
-   their own row. Narrower columns wrap the answers harder, so the type
-   steps down a little here to keep the boxes from growing tall.
-   Below 1025px the FAQ falls back to two columns and below 600px to one,
-   where forcing equal heights would only add dead space. */
+/* HALO ONLY — a full-width lead card, then three across in two rows of
+   three equal boxes beneath it. Scoped to .skin-light because it is a
+   design decision for this direction, not a shared mechanic: Obsidian
+   keeps its own two-column FAQ. The equal-height rules are NOT scoped —
+   ragged card heights are a defect in either skin.
+
+   Narrower columns wrap the answers harder, so the type steps down here
+   to keep the boxes from growing tall. Below 1025px Halo falls back to
+   two columns like Obsidian, and below 600px both go to one, where equal
+   heights would only add dead space. */
 @media (min-width:1025px){
   /* "How do I get started?" leads, full width, because it is the first
      thing anyone asks. The six equal boxes sit under it in two rows.
      Row 1 takes its own height; forcing the wide card to match the others
      left 93px of empty card, which is the hole this was meant to close.
      Rows 2 and 3 share one height, so the six are identical. */
-  .faqs{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto 1fr 1fr}
-  .faqs details:first-child{grid-column:1/-1}
-  .faqs summary{font-size:.9rem;padding:var(--s4) var(--s4) var(--s3)}
-  .faqs .fq-a{font-size:.84rem;line-height:1.6;padding:0 var(--s4) var(--s4)}
-  .faqs .fq-t{font-size:.6rem;padding:2px 7px}
+  .skin-light .faqs{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto 1fr 1fr}
+  .skin-light .faqs details:first-child{grid-column:1/-1}
+  .skin-light .faqs summary{font-size:.9rem;padding:var(--s4) var(--s4) var(--s3)}
+  .skin-light .faqs .fq-a{font-size:.84rem;line-height:1.6;padding:0 var(--s4) var(--s4)}
+  .skin-light .faqs .fq-t{font-size:.6rem;padding:2px 7px}
 }
-@media (min-width:601px) and (max-width:1024px){.faqs{grid-auto-rows:1fr}}
+/* Equal card heights in both skins, at every multi-column width. Halo's
+   block above overrides the first three rows with its own template. */
+@media (min-width:601px){.faqs{grid-auto-rows:1fr}}
 
 /* close */
 .close{padding:var(--s10) 0;text-align:center;background:var(--ink);color:#fff}
