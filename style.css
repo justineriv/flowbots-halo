@@ -401,7 +401,26 @@ summary::-webkit-details-marker{display:none}
    height, so all seven match, not just the pairs. Off below 600px, where
    the grid is one column and equal heights would only add dead space. */
 .faqs details{align-self:stretch}
-@media (min-width:601px){.faqs{grid-auto-rows:1fr}}
+
+/* Three across, two rows of three equal boxes, and the seventh spanning
+   the full width beneath them. grid-auto-rows:1fr makes every row the
+   tallest card's height, so the six match exactly rather than only within
+   their own row. Narrower columns wrap the answers harder, so the type
+   steps down a little here to keep the boxes from growing tall.
+   Below 1025px the FAQ falls back to two columns and below 600px to one,
+   where forcing equal heights would only add dead space. */
+@media (min-width:1025px){
+  /* Rows 1 and 2 share one height, so the six boxes are identical. Row 3
+     takes its own height: the seventh card is full width, its answer runs
+     to two lines there, and forcing it to match would leave 93px of empty
+     card - the same hole this was meant to close. */
+  .faqs{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1fr 1fr auto}
+  .faqs details:last-child{grid-column:1/-1}
+  .faqs summary{font-size:.9rem;padding:var(--s4) var(--s4) var(--s3)}
+  .faqs .fq-a{font-size:.84rem;line-height:1.6;padding:0 var(--s4) var(--s4)}
+  .faqs .fq-t{font-size:.6rem;padding:2px 7px}
+}
+@media (min-width:601px) and (max-width:1024px){.faqs{grid-auto-rows:1fr}}
 
 /* close */
 .close{padding:var(--s10) 0;text-align:center;background:var(--ink);color:#fff}
