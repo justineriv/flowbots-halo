@@ -402,20 +402,21 @@ summary::-webkit-details-marker{display:none}
    the grid is one column and equal heights would only add dead space. */
 .faqs details{align-self:stretch}
 
-/* Three across, two rows of three equal boxes, and the seventh spanning
-   the full width beneath them. grid-auto-rows:1fr makes every row the
+/* A full-width lead card, then three across in two rows of three equal
+   boxes beneath it. grid-auto-rows:1fr makes every row the
    tallest card's height, so the six match exactly rather than only within
    their own row. Narrower columns wrap the answers harder, so the type
    steps down a little here to keep the boxes from growing tall.
    Below 1025px the FAQ falls back to two columns and below 600px to one,
    where forcing equal heights would only add dead space. */
 @media (min-width:1025px){
-  /* Rows 1 and 2 share one height, so the six boxes are identical. Row 3
-     takes its own height: the seventh card is full width, its answer runs
-     to two lines there, and forcing it to match would leave 93px of empty
-     card - the same hole this was meant to close. */
-  .faqs{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:1fr 1fr auto}
-  .faqs details:last-child{grid-column:1/-1}
+  /* "How do I get started?" leads, full width, because it is the first
+     thing anyone asks. The six equal boxes sit under it in two rows.
+     Row 1 takes its own height; forcing the wide card to match the others
+     left 93px of empty card, which is the hole this was meant to close.
+     Rows 2 and 3 share one height, so the six are identical. */
+  .faqs{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto 1fr 1fr}
+  .faqs details:first-child{grid-column:1/-1}
   .faqs summary{font-size:.9rem;padding:var(--s4) var(--s4) var(--s3)}
   .faqs .fq-a{font-size:.84rem;line-height:1.6;padding:0 var(--s4) var(--s4)}
   .faqs .fq-t{font-size:.6rem;padding:2px 7px}
