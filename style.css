@@ -71,8 +71,29 @@
 .skin-dark .sec,.skin-dark .close{--fg:#FFFFFF;--fg2:#BAC8D3;--fg3:#94A6B4;
   --acc:var(--cy-lite);--ln:rgba(255,255,255,.085);
   --card:rgba(255,255,255,.035);--cln:rgba(255,255,255,.11)}
-.skin-dark main .sec:nth-of-type(even){--tone:#05070C}
-.skin-dark main .sec:nth-of-type(odd){--tone:#0B1724}
+/* GRADIENT BANDS. Two tones still alternate, so the rhythm holds; what
+   changes is that each band is a surface with light falling across it
+   rather than a flat fill, and the direction flips band to band so the
+   seams read as one continuous sheet of metal.
+
+   EVERY STOP IS OPAQUE, and that is not a style choice. A ground built
+   from stacked transparent gradients cannot be measured against, which is
+   exactly what put 39 contrast failures into the first Halo build. The
+   cyan bloom on the steel bands is pre-composited into its stop colour
+   (#102737 is rgba(56,186,223,.10) over #0B1724) so the checker reads the
+   real pixel rather than guessing at a blend. */
+.skin-dark main .sec:nth-of-type(even){--tone:#05070C;background-color:#05070C;
+  background-image:linear-gradient(180deg,#080E17 0%,#05070C 58%,#070C14 100%)}
+.skin-dark main .sec:nth-of-type(odd){--tone:#0B1724;background-color:#0B1724;
+  background-image:linear-gradient(180deg,#102737 0%,#0B1724 55%,#0A1420 100%)}
+/* flip the falloff every other pair, so four bands never repeat identically */
+.skin-dark main .sec:nth-of-type(4n+1){background-image:linear-gradient(180deg,#0A1420 0%,#0B1724 45%,#102737 100%)}
+.skin-dark main .sec:nth-of-type(4n){background-image:linear-gradient(180deg,#070C14 0%,#05070C 42%,#080E17 100%)}
+
+.skin-dark .logos{background-color:#0B1724;
+  background-image:linear-gradient(180deg,#0E2131 0%,#0B1724 100%)}
+.skin-dark .close{background-color:#05070C;
+  background-image:linear-gradient(180deg,#05070C 0%,#0C2030 55%,#061019 100%)}
 
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -264,7 +285,7 @@ a{color:var(--acc,var(--cy-text))}
 /* ---------- logo strip ---------- */
 .logos{padding:var(--s7) 0;background:var(--tone,#fff);border-bottom:1px solid rgba(10,22,40,.09)}
 .skin-light .logos{background:#F6FAFD}
-.skin-dark .logos{background:#0B1724;border-bottom-color:rgba(255,255,255,.07)}
+.skin-dark .logos{border-bottom-color:rgba(255,255,255,.07)}
 .lg-t{text-align:center;font-size:.72rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
   color:#4C6B85;margin:0 0 var(--s5)}
 .skin-dark .lg-t{color:#88A7BD}
@@ -468,7 +489,7 @@ summary::-webkit-details-marker{display:none}
 
 /* close */
 .close{padding:var(--s10) 0;text-align:center;background:var(--ink);color:#fff}
-.skin-dark .close{background:#05070C}
+
 .close h2{color:#fff;margin-bottom:var(--s3)}
 .close .grad{color:var(--cy-lite)}
 .close p{color:#B3CDDD;max-width:600px;margin:0 auto var(--s5)}
